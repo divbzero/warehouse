@@ -45,11 +45,7 @@ def upgrade():
             server_default=sa.text("gen_random_uuid()"),
             nullable=False,
         ),
-        sa.Column(
-            "invite_status",
-            sa.Enum("pending", "expired", name="organizationinvitationstatus"),
-            nullable=False,
-        ),
+        sa.Column("invite_status", sa.Text(), nullable=False),
         sa.Column("token", sa.Text(), nullable=False),
         sa.Column("user_id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("organization_id", postgresql.UUID(as_uuid=True), nullable=False),
