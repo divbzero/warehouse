@@ -44,6 +44,7 @@ from warehouse.macaroons.interfaces import IMacaroonService
 from warehouse.manage import views
 from warehouse.metrics.interfaces import IMetricsService
 from warehouse.oidc.interfaces import TooManyOIDCRegistrations
+from warehouse.organizations.interfaces import IOrganizationService
 from warehouse.packaging.models import (
     File,
     JournalEntry,
@@ -78,12 +79,14 @@ class TestManageAccount:
     def test_default_response(self, monkeypatch, public_email, expected_public_email):
         breach_service = pretend.stub()
         user_service = pretend.stub()
+        organization_service = pretend.stub()
         name = pretend.stub()
         user_id = pretend.stub()
         request = pretend.stub(
             find_service=lambda iface, **kw: {
                 IPasswordBreachedService: breach_service,
                 IUserService: user_service,
+                IOrganizationService: organization_service,
             }[iface],
             user=pretend.stub(name=name, id=user_id, public_email=public_email),
         )
@@ -1957,10 +1960,12 @@ class TestProvisionMacaroonViews:
                 location=request.domain,
                 user_id=request.user.id,
                 description=create_macaroon_obj.description.data,
-                caveats={
-                    "permissions": create_macaroon_obj.validated_scope,
-                    "version": 1,
-                },
+                caveats=[
+                    {
+                        "permissions": create_macaroon_obj.validated_scope,
+                        "version": 1,
+                    }
+                ],
             )
         ]
         assert result == {
@@ -1975,10 +1980,12 @@ class TestProvisionMacaroonViews:
                 tag="account:api_token:added",
                 additional={
                     "description": create_macaroon_obj.description.data,
-                    "caveats": {
-                        "permissions": create_macaroon_obj.validated_scope,
-                        "version": 1,
-                    },
+                    "caveats": [
+                        {
+                            "permissions": create_macaroon_obj.validated_scope,
+                            "version": 1,
+                        }
+                    ],
                 },
             )
         ]
@@ -2044,10 +2051,12 @@ class TestProvisionMacaroonViews:
                 location=request.domain,
                 user_id=request.user.id,
                 description=create_macaroon_obj.description.data,
-                caveats={
-                    "permissions": create_macaroon_obj.validated_scope,
-                    "version": 1,
-                },
+                caveats=[
+                    {
+                        "permissions": create_macaroon_obj.validated_scope,
+                        "version": 1,
+                    }
+                ],
             )
         ]
         assert result == {
@@ -2062,10 +2071,12 @@ class TestProvisionMacaroonViews:
                 tag="account:api_token:added",
                 additional={
                     "description": create_macaroon_obj.description.data,
-                    "caveats": {
-                        "permissions": create_macaroon_obj.validated_scope,
-                        "version": 1,
-                    },
+                    "caveats": [
+                        {
+                            "permissions": create_macaroon_obj.validated_scope,
+                            "version": 1,
+                        }
+                    ],
                 },
             )
         ]
@@ -2154,9 +2165,7 @@ class TestProvisionMacaroonViews:
         assert macaroon_service.delete_macaroon.calls == []
 
     def test_delete_macaroon(self, monkeypatch):
-        macaroon = pretend.stub(
-            description="fake macaroon", caveats={"version": 1, "permissions": "user"}
-        )
+        macaroon = pretend.stub(description="fake macaroon", permissions_caveat="user")
         macaroon_service = pretend.stub(
             delete_macaroon=pretend.call_recorder(lambda id: pretend.stub()),
             find_macaroon=pretend.call_recorder(lambda id: macaroon),
@@ -2213,7 +2222,7 @@ class TestProvisionMacaroonViews:
     def test_delete_macaroon_records_events_for_each_project(self, monkeypatch):
         macaroon = pretend.stub(
             description="fake macaroon",
-            caveats={"version": 1, "permissions": {"projects": ["foo", "bar"]}},
+            permissions_caveat={"projects": ["foo", "bar"]},
         )
         macaroon_service = pretend.stub(
             delete_macaroon=pretend.call_recorder(lambda id: pretend.stub()),
@@ -2294,6 +2303,301 @@ class TestProvisionMacaroonViews:
                     "user": request.user.username,
                 },
             ),
+        ]
+
+
+class TestManageOrganizations:
+    def test_default_response(self, monkeypatch):
+        create_organization_obj = pretend.stub()
+        create_organization_cls = pretend.call_recorder(
+            lambda *a, **kw: create_organization_obj
+        )
+        monkeypatch.setattr(views, "CreateOrganizationForm", create_organization_cls)
+
+        request = pretend.stub(
+            user=pretend.stub(id=pretend.stub(), username=pretend.stub()),
+            find_service=lambda interface, **kw: {
+                IOrganizationService: pretend.stub(),
+                IUserService: pretend.stub(),
+            }[interface],
+        )
+
+        view = views.ManageOrganizationsViews(request)
+
+        assert view.default_response == {
+            "create_organization_form": create_organization_obj,
+        }
+
+    def test_manage_organizations(self, monkeypatch):
+        request = pretend.stub(
+            find_service=lambda *a, **kw: pretend.stub(),
+            flags=pretend.stub(enabled=pretend.call_recorder(lambda *a: False)),
+        )
+
+        default_response = {"default": "response"}
+        monkeypatch.setattr(
+            views.ManageOrganizationsViews, "default_response", default_response
+        )
+        view = views.ManageOrganizationsViews(request)
+        result = view.manage_organizations()
+
+        assert request.flags.enabled.calls == [
+            pretend.call(AdminFlagValue.DISABLE_ORGANIZATIONS),
+        ]
+        assert result == default_response
+
+    def test_manage_organizations_disallow_organizations(self, monkeypatch):
+        request = pretend.stub(
+            find_service=lambda *a, **kw: pretend.stub(),
+            flags=pretend.stub(enabled=pretend.call_recorder(lambda *a: True)),
+        )
+
+        view = views.ManageOrganizationsViews(request)
+        with pytest.raises(HTTPNotFound):
+            view.manage_organizations()
+        assert request.flags.enabled.calls == [
+            pretend.call(AdminFlagValue.DISABLE_ORGANIZATIONS),
+        ]
+
+    def test_create_organization(self, monkeypatch):
+        admins = []
+        user_service = pretend.stub(
+            get_admins=pretend.call_recorder(lambda *a, **kw: admins),
+            record_event=pretend.call_recorder(lambda *a, **kw: None),
+        )
+
+        organization = pretend.stub(
+            id=pretend.stub(),
+            name="psf",
+            display_name="Python Software Foundation",
+            orgtype="Community",
+            link_url="https://www.python.org/psf/",
+            description=(
+                "To promote, protect, and advance the Python programming "
+                "language, and to support and facilitate the growth of a "
+                "diverse and international community of Python programmers"
+            ),
+            is_active=False,
+            is_approved=None,
+        )
+        catalog_entry = pretend.stub()
+        role = pretend.stub()
+        organization_service = pretend.stub(
+            add_organization=pretend.call_recorder(lambda *a, **kw: organization),
+            add_catalog_entry=pretend.call_recorder(lambda *a, **kw: catalog_entry),
+            add_organization_role=pretend.call_recorder(lambda *a, **kw: role),
+            record_event=pretend.call_recorder(lambda *a, **kw: None),
+        )
+
+        request = pretend.stub(
+            POST={
+                "name": organization.name,
+                "display_name": organization.display_name,
+                "orgtype": organization.orgtype,
+                "link_url": organization.link_url,
+                "description": organization.description,
+            },
+            domain=pretend.stub(),
+            user=pretend.stub(
+                id=pretend.stub(),
+                username=pretend.stub(),
+                has_primary_verified_email=True,
+            ),
+            session=pretend.stub(flash=pretend.call_recorder(lambda *a, **kw: None)),
+            find_service=lambda interface, **kw: {
+                IUserService: user_service,
+                IOrganizationService: organization_service,
+            }[interface],
+            flags=pretend.stub(enabled=pretend.call_recorder(lambda *a: False)),
+            remote_addr="0.0.0.0",
+        )
+
+        create_organization_obj = pretend.stub(validate=lambda: True, data=request.POST)
+        create_organization_cls = pretend.call_recorder(
+            lambda *a, **kw: create_organization_obj
+        )
+        monkeypatch.setattr(views, "CreateOrganizationForm", create_organization_cls)
+
+        send_email = pretend.call_recorder(lambda *a, **kw: None)
+        monkeypatch.setattr(
+            views, "send_admin_new_organization_requested_email", send_email
+        )
+        monkeypatch.setattr(views, "send_new_organization_requested_email", send_email)
+
+        default_response = {"default": "response"}
+        monkeypatch.setattr(
+            views.ManageOrganizationsViews, "default_response", default_response
+        )
+
+        view = views.ManageOrganizationsViews(request)
+        result = view.create_organization()
+
+        assert request.flags.enabled.calls == [
+            pretend.call(AdminFlagValue.DISABLE_ORGANIZATIONS),
+        ]
+        assert user_service.get_admins.calls == [pretend.call()]
+        assert organization_service.add_organization.calls == [
+            pretend.call(
+                name=organization.name,
+                display_name=organization.display_name,
+                orgtype=organization.orgtype,
+                link_url=organization.link_url,
+                description=organization.description,
+            )
+        ]
+        assert organization_service.add_catalog_entry.calls == [
+            pretend.call(
+                organization.name,
+                organization.id,
+            )
+        ]
+        assert organization_service.add_organization_role.calls == [
+            pretend.call(
+                "Owner",
+                request.user.id,
+                organization.id,
+            )
+        ]
+        assert organization_service.record_event.calls == [
+            pretend.call(
+                organization.id,
+                tag="organization:create",
+                additional={"created_by": request.user.username},
+            ),
+            pretend.call(
+                organization.id,
+                tag="organization:catalog_entry:add",
+                additional={"submitted_by": request.user.username},
+            ),
+            pretend.call(
+                organization.id,
+                tag="organization:organization_role:invite",
+                additional={
+                    "submitted_by": request.user.username,
+                    "role_name": "Owner",
+                    "target_user": request.user.username,
+                },
+            ),
+            pretend.call(
+                organization.id,
+                tag="organization:organization_role:accepted",
+                additional={
+                    "submitted_by": request.user.username,
+                    "role_name": "Owner",
+                    "target_user": request.user.username,
+                },
+            ),
+        ]
+        assert user_service.record_event.calls == [
+            pretend.call(
+                request.user.id,
+                tag="account:organization_role:accepted",
+                additional={
+                    "submitted_by": request.user.username,
+                    "organization_name": organization.name,
+                    "role_name": "Owner",
+                },
+            ),
+        ]
+        assert send_email.calls == [
+            pretend.call(
+                request,
+                admins,
+                organization_name=organization.name,
+                initiator_username=request.user.username,
+            ),
+            pretend.call(
+                request,
+                request.user,
+                organization_name=organization.name,
+            ),
+        ]
+        assert result == default_response
+
+    def test_create_organization_validation_fails(self, monkeypatch):
+        admins = []
+        user_service = pretend.stub(
+            get_admins=pretend.call_recorder(lambda *a, **kw: admins),
+            record_event=pretend.call_recorder(lambda *a, **kw: None),
+        )
+
+        organization = pretend.stub()
+        catalog_entry = pretend.stub()
+        role = pretend.stub()
+        organization_service = pretend.stub(
+            add_organization=pretend.call_recorder(lambda *a, **kw: organization),
+            add_catalog_entry=pretend.call_recorder(lambda *a, **kw: catalog_entry),
+            add_organization_role=pretend.call_recorder(lambda *a, **kw: role),
+            record_event=pretend.call_recorder(lambda *a, **kw: None),
+        )
+
+        request = pretend.stub(
+            POST={
+                "name": None,
+                "display_name": None,
+                "orgtype": None,
+                "link_url": None,
+                "description": None,
+            },
+            domain=pretend.stub(),
+            user=pretend.stub(
+                id=pretend.stub(),
+                username=pretend.stub(),
+                has_primary_verified_email=True,
+            ),
+            session=pretend.stub(flash=pretend.call_recorder(lambda *a, **kw: None)),
+            find_service=lambda interface, **kw: {
+                IUserService: user_service,
+                IOrganizationService: organization_service,
+            }[interface],
+            flags=pretend.stub(enabled=pretend.call_recorder(lambda *a: False)),
+            remote_addr="0.0.0.0",
+        )
+
+        create_organization_obj = pretend.stub(
+            validate=lambda: False, data=request.POST
+        )
+        create_organization_cls = pretend.call_recorder(
+            lambda *a, **kw: create_organization_obj
+        )
+        monkeypatch.setattr(views, "CreateOrganizationForm", create_organization_cls)
+
+        send_email = pretend.call_recorder(lambda *a, **kw: None)
+        monkeypatch.setattr(
+            views, "send_admin_new_organization_requested_email", send_email
+        )
+        monkeypatch.setattr(views, "send_new_organization_requested_email", send_email)
+
+        default_response = {"default": "response"}
+        monkeypatch.setattr(
+            views.ManageOrganizationsViews, "default_response", default_response
+        )
+
+        view = views.ManageOrganizationsViews(request)
+        result = view.create_organization()
+
+        assert request.flags.enabled.calls == [
+            pretend.call(AdminFlagValue.DISABLE_ORGANIZATIONS),
+        ]
+        assert user_service.get_admins.calls == []
+        assert organization_service.add_organization.calls == []
+        assert organization_service.add_catalog_entry.calls == []
+        assert organization_service.add_organization_role.calls == []
+        assert organization_service.record_event.calls == []
+        assert send_email.calls == []
+        assert result == default_response
+
+    def test_create_organizations_disallow_organizations(self, monkeypatch):
+        request = pretend.stub(
+            find_service=lambda *a, **kw: pretend.stub(),
+            flags=pretend.stub(enabled=pretend.call_recorder(lambda *a: True)),
+        )
+
+        view = views.ManageOrganizationsViews(request)
+        with pytest.raises(HTTPNotFound):
+            view.create_organization()
+        assert request.flags.enabled.calls == [
+            pretend.call(AdminFlagValue.DISABLE_ORGANIZATIONS),
         ]
 
 

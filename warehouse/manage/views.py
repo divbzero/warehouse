@@ -43,9 +43,11 @@ from warehouse.accounts.views import logout
 from warehouse.admin.flags import AdminFlagValue
 from warehouse.email import (
     send_account_deletion_email,
+    send_admin_new_organization_requested_email,
     send_collaborator_removed_email,
     send_collaborator_role_changed_email,
     send_email_verification_email,
+    send_new_organization_requested_email,
     send_oidc_provider_added_email,
     send_oidc_provider_removed_email,
     send_password_change_email,
@@ -70,6 +72,7 @@ from warehouse.manage.forms import (
     ChangeRoleForm,
     ConfirmPasswordForm,
     CreateMacaroonForm,
+    CreateOrganizationForm,
     CreateRoleForm,
     DeleteMacaroonForm,
     DeleteTOTPForm,
@@ -83,6 +86,7 @@ from warehouse.metrics.interfaces import IMetricsService
 from warehouse.oidc.forms import DeleteProviderForm, GitHubProviderForm
 from warehouse.oidc.interfaces import TooManyOIDCRegistrations
 from warehouse.oidc.models import GitHubProvider, OIDCProvider
+from warehouse.organizations.interfaces import IOrganizationService
 from warehouse.packaging.models import (
     File,
     JournalEntry,
@@ -879,7 +883,7 @@ class ProvisionMacaroonViews:
 
         response = {**self.default_response}
         if form.validate():
-            macaroon_caveats = {"permissions": form.validated_scope, "version": 1}
+            macaroon_caveats = [{"permissions": form.validated_scope, "version": 1}]
             serialized_macaroon, macaroon = self.macaroon_service.create_macaroon(
                 location=self.request.domain,
                 user_id=self.request.user.id,
@@ -941,12 +945,12 @@ class ProvisionMacaroonViews:
                 tag="account:api_token:removed",
                 additional={"macaroon_id": form.macaroon_id.data},
             )
-            if "projects" in macaroon.caveats["permissions"]:
+            if "projects" in macaroon.permissions_caveat:
                 projects = [
                     project
                     for project in self.request.user.projects
                     if project.normalized_name
-                    in macaroon.caveats["permissions"]["projects"]
+                    in macaroon.permissions_caveat["projects"]
                 ]
                 for project in projects:
                     project.record_event(
@@ -967,6 +971,110 @@ class ProvisionMacaroonViews:
         if not is_safe_url(redirect_to, host=self.request.host):
             redirect_to = self.request.route_path("manage.account")
         return HTTPSeeOther(redirect_to)
+
+
+@view_defaults(
+    route_name="manage.organizations",
+    renderer="manage/organizations.html",
+    uses_session=True,
+    require_csrf=True,
+    require_methods=False,
+    permission="manage:user",
+    has_translations=True,
+)
+class ManageOrganizationsViews:
+    def __init__(self, request):
+        self.request = request
+        self.user_service = request.find_service(IUserService, context=None)
+        self.organization_service = request.find_service(
+            IOrganizationService, context=None
+        )
+
+    @property
+    def default_response(self):
+        return {
+            "create_organization_form": CreateOrganizationForm(
+                organization_service=self.organization_service,
+            ),
+        }
+
+    @view_config(request_method="GET")
+    def manage_organizations(self):
+        if self.request.flags.enabled(AdminFlagValue.DISABLE_ORGANIZATIONS):
+            raise HTTPNotFound
+
+        return self.default_response
+
+    @view_config(request_method="POST", request_param=CreateOrganizationForm.__params__)
+    def create_organization(self):
+        if self.request.flags.enabled(AdminFlagValue.DISABLE_ORGANIZATIONS):
+            raise HTTPNotFound
+
+        form = CreateOrganizationForm(
+            self.request.POST,
+            organization_service=self.organization_service,
+        )
+
+        if form.validate():
+            data = form.data
+            organization = self.organization_service.add_organization(**data)
+            self.organization_service.record_event(
+                organization.id,
+                tag="organization:create",
+                additional={"created_by": self.request.user.username},
+            )
+            self.organization_service.add_catalog_entry(
+                organization.name, organization.id
+            )
+            self.organization_service.record_event(
+                organization.id,
+                tag="organization:catalog_entry:add",
+                additional={"submitted_by": self.request.user.username},
+            )
+            self.organization_service.add_organization_role(
+                "Owner", self.request.user.id, organization.id
+            )
+            self.organization_service.record_event(
+                organization.id,
+                tag="organization:organization_role:invite",
+                additional={
+                    "submitted_by": self.request.user.username,
+                    "role_name": "Owner",
+                    "target_user": self.request.user.username,
+                },
+            )
+            self.organization_service.record_event(
+                organization.id,
+                tag="organization:organization_role:accepted",
+                additional={
+                    "submitted_by": self.request.user.username,
+                    "role_name": "Owner",
+                    "target_user": self.request.user.username,
+                },
+            )
+            self.user_service.record_event(
+                self.request.user.id,
+                tag="account:organization_role:accepted",
+                additional={
+                    "submitted_by": self.request.user.username,
+                    "organization_name": organization.name,
+                    "role_name": "Owner",
+                },
+            )
+            send_admin_new_organization_requested_email(
+                self.request,
+                self.user_service.get_admins(),
+                organization_name=organization.name,
+                initiator_username=self.request.user.username,
+            )
+            send_new_organization_requested_email(
+                self.request, self.request.user, organization_name=organization.name
+            )
+            self.request.session.flash(
+                "Request for new organization submitted", queue="success"
+            )
+
+        return self.default_response
 
 
 @view_config(
