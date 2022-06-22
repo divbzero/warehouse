@@ -116,7 +116,7 @@ msgstr ""
 msgid "Successful WebAuthn assertion"
 msgstr ""
 
-#: warehouse/accounts/views.py:447 warehouse/manage/views.py:898
+#: warehouse/accounts/views.py:447 warehouse/manage/views.py:899
 msgid "Recovery code accepted. The supplied code cannot be used again."
 msgstr ""
 
@@ -327,69 +327,69 @@ msgstr ""
 msgid "This team name has already been used. Choose a different team name."
 msgstr ""
 
-#: warehouse/manage/views.py:329
+#: warehouse/manage/views.py:330
 msgid "Email ${email_address} added - check your email for a verification link"
 msgstr ""
 
-#: warehouse/manage/views.py:846
+#: warehouse/manage/views.py:847
 msgid "Recovery codes already generated"
 msgstr ""
 
-#: warehouse/manage/views.py:847
+#: warehouse/manage/views.py:848
 msgid "Generating new recovery codes will invalidate your existing codes."
 msgstr ""
 
-#: warehouse/manage/views.py:1757
+#: warehouse/manage/views.py:1758
 msgid "User '${username}' already has ${role_name} role for organization"
 msgstr ""
 
-#: warehouse/manage/views.py:1768
+#: warehouse/manage/views.py:1769
 msgid ""
 "User '${username}' does not have a verified primary email address and "
 "cannot be added as a ${role_name} for organization"
 msgstr ""
 
-#: warehouse/manage/views.py:1782 warehouse/manage/views.py:3522
+#: warehouse/manage/views.py:1783 warehouse/manage/views.py:3627
 msgid "User '${username}' already has an active invite. Please try again later."
 msgstr ""
 
-#: warehouse/manage/views.py:1839 warehouse/manage/views.py:3580
+#: warehouse/manage/views.py:1840 warehouse/manage/views.py:3685
 msgid "Invitation sent to '${username}'"
 msgstr ""
 
-#: warehouse/manage/views.py:1882
+#: warehouse/manage/views.py:1883
 msgid "Could not find organization invitation."
 msgstr ""
 
-#: warehouse/manage/views.py:1896 warehouse/manage/views.py:3638
+#: warehouse/manage/views.py:1897 warehouse/manage/views.py:3743
 msgid "Invitation already expired."
 msgstr ""
 
-#: warehouse/manage/views.py:1929 warehouse/manage/views.py:3662
+#: warehouse/manage/views.py:1930 warehouse/manage/views.py:3767
 msgid "Invitation revoked from '${username}'."
 msgstr ""
 
-#: warehouse/manage/views.py:2212
+#: warehouse/manage/views.py:2317
 msgid "User '${username}' is already a team member"
 msgstr ""
 
-#: warehouse/manage/views.py:2593
+#: warehouse/manage/views.py:2698
 msgid ""
 "There have been too many attempted OpenID Connect registrations. Try "
 "again later."
 msgstr ""
 
-#: warehouse/manage/views.py:3498
+#: warehouse/manage/views.py:3603
 msgid "User '${username}' already has ${role_name} role for project"
 msgstr ""
 
-#: warehouse/manage/views.py:3509
+#: warehouse/manage/views.py:3614
 msgid ""
 "User '${username}' does not have a verified primary email address and "
 "cannot be added as a ${role_name} for project"
 msgstr ""
 
-#: warehouse/manage/views.py:3627
+#: warehouse/manage/views.py:3732
 msgid "Could not find role invitation."
 msgstr ""
 
@@ -714,7 +714,7 @@ msgstr ""
 #: warehouse/templates/manage/settings.html:121
 #: warehouse/templates/manage/settings.html:164
 #: warehouse/templates/manage/settings.html:227
-#: warehouse/templates/manage/team/settings.html:86
+#: warehouse/templates/manage/team/settings.html:77
 msgid "Warning"
 msgstr ""
 
@@ -1040,7 +1040,7 @@ msgstr ""
 #: warehouse/templates/manage/roles.html:170
 #: warehouse/templates/manage/roles.html:182
 #: warehouse/templates/manage/team/roles.html:96
-#: warehouse/templates/manage/team/settings.html:44
+#: warehouse/templates/manage/team/settings.html:35
 #: warehouse/templates/manage/token.html:133
 #: warehouse/templates/manage/token.html:150
 #: warehouse/templates/re-auth.html:51
@@ -2956,7 +2956,7 @@ msgstr ""
 #: warehouse/templates/manage/account.html:714
 #: warehouse/templates/manage/organization/settings.html:157
 #: warehouse/templates/manage/organization/settings.html:203
-#: warehouse/templates/manage/team/settings.html:84
+#: warehouse/templates/manage/team/settings.html:75
 #: warehouse/templates/manage/token.html:166
 msgid "Proceed with caution!"
 msgstr ""
@@ -4906,8 +4906,7 @@ msgid "Manage '%(organization_name)s' settings"
 msgstr ""
 
 #: warehouse/templates/manage/organization/settings.html:31
-#: warehouse/templates/manage/team/settings.html:31
-#: warehouse/templates/manage/team/settings.html:66
+#: warehouse/templates/manage/team/settings.html:57
 msgid "Date created"
 msgstr ""
 
@@ -5091,32 +5090,28 @@ msgstr ""
 msgid "Manage '%(team_name)s' settings"
 msgstr ""
 
-#: warehouse/templates/manage/team/settings.html:29
-msgid "Team account name"
-msgstr ""
-
-#: warehouse/templates/manage/team/settings.html:42
+#: warehouse/templates/manage/team/settings.html:33
 msgid "Team name"
 msgstr ""
 
-#: warehouse/templates/manage/team/settings.html:48
+#: warehouse/templates/manage/team/settings.html:39
 msgid "Name of your team"
 msgstr ""
 
-#: warehouse/templates/manage/team/settings.html:73
+#: warehouse/templates/manage/team/settings.html:64
 msgid "Update team"
 msgstr ""
 
-#: warehouse/templates/manage/team/settings.html:82
-#: warehouse/templates/manage/team/settings.html:89
+#: warehouse/templates/manage/team/settings.html:73
+#: warehouse/templates/manage/team/settings.html:80
 msgid "Delete team"
 msgstr ""
 
-#: warehouse/templates/manage/team/settings.html:87
+#: warehouse/templates/manage/team/settings.html:78
 msgid "You will not be able to recover your team after you delete it."
 msgstr ""
 
-#: warehouse/templates/manage/team/settings.html:89
+#: warehouse/templates/manage/team/settings.html:80
 msgid "Team Name"
 msgstr ""
 
