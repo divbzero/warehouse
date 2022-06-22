@@ -714,6 +714,7 @@ msgstr ""
 #: warehouse/templates/manage/settings.html:121
 #: warehouse/templates/manage/settings.html:164
 #: warehouse/templates/manage/settings.html:227
+#: warehouse/templates/manage/team/settings.html:86
 msgid "Warning"
 msgstr ""
 
@@ -1039,6 +1040,7 @@ msgstr ""
 #: warehouse/templates/manage/roles.html:170
 #: warehouse/templates/manage/roles.html:182
 #: warehouse/templates/manage/team/roles.html:96
+#: warehouse/templates/manage/team/settings.html:44
 #: warehouse/templates/manage/token.html:133
 #: warehouse/templates/manage/token.html:150
 #: warehouse/templates/re-auth.html:51
@@ -2954,6 +2956,7 @@ msgstr ""
 #: warehouse/templates/manage/account.html:714
 #: warehouse/templates/manage/organization/settings.html:157
 #: warehouse/templates/manage/organization/settings.html:203
+#: warehouse/templates/manage/team/settings.html:84
 #: warehouse/templates/manage/token.html:166
 msgid "Proceed with caution!"
 msgstr ""
@@ -4903,6 +4906,8 @@ msgid "Manage '%(organization_name)s' settings"
 msgstr ""
 
 #: warehouse/templates/manage/organization/settings.html:31
+#: warehouse/templates/manage/team/settings.html:31
+#: warehouse/templates/manage/team/settings.html:66
 msgid "Date created"
 msgstr ""
 
@@ -5074,6 +5079,45 @@ msgstr ""
 
 #: warehouse/templates/manage/team/roles.html:89
 msgid "Add member"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:17
+#: warehouse/templates/manage/team/settings.html:24
+msgid "Team settings"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:21
+#, python-format
+msgid "Manage '%(team_name)s' settings"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:29
+msgid "Team account name"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:42
+msgid "Team name"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:48
+msgid "Name of your team"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:73
+msgid "Update team"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:82
+#: warehouse/templates/manage/team/settings.html:89
+msgid "Delete team"
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:87
+msgid "You will not be able to recover your team after you delete it."
+msgstr ""
+
+#: warehouse/templates/manage/team/settings.html:89
+msgid "Team Name"
 msgstr ""
 
 #: warehouse/templates/packaging/detail.html:106
