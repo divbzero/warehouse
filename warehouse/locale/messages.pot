@@ -1037,8 +1037,12 @@ msgstr ""
 #: warehouse/templates/manage/publishing.html:85
 #: warehouse/templates/manage/publishing.html:97
 #: warehouse/templates/manage/publishing.html:109
-#: warehouse/templates/manage/roles.html:170
-#: warehouse/templates/manage/roles.html:182
+#: warehouse/templates/manage/roles.html:259
+#: warehouse/templates/manage/roles.html:270
+#: warehouse/templates/manage/roles.html:282
+#: warehouse/templates/manage/roles.html:297
+#: warehouse/templates/manage/roles.html:324
+#: warehouse/templates/manage/roles.html:336
 #: warehouse/templates/manage/team/roles.html:96
 #: warehouse/templates/manage/team/settings.html:35
 #: warehouse/templates/manage/token.html:133
@@ -1137,7 +1141,8 @@ msgstr ""
 #: warehouse/templates/email/organization-member-role-changed/body.html:30
 #: warehouse/templates/manage/account.html:248
 #: warehouse/templates/manage/organization/roles.html:195
-#: warehouse/templates/manage/roles.html:173
+#: warehouse/templates/manage/roles.html:284
+#: warehouse/templates/manage/roles.html:327
 #: warehouse/templates/manage/team/roles.html:99
 msgid "Username"
 msgstr ""
@@ -1179,8 +1184,8 @@ msgstr ""
 #: warehouse/templates/manage/account.html:223
 #: warehouse/templates/manage/organization/roles.html:71
 #: warehouse/templates/manage/organization/roles.html:145
-#: warehouse/templates/manage/roles.html:62
-#: warehouse/templates/manage/roles.html:125
+#: warehouse/templates/manage/roles.html:130
+#: warehouse/templates/manage/roles.html:193
 #: warehouse/templates/manage/team/roles.html:53
 msgid "Avatar for {user} from gravatar.com"
 msgstr ""
@@ -1696,8 +1701,11 @@ msgstr ""
 #: warehouse/templates/manage/organization/roles.html:99
 #: warehouse/templates/manage/organization/roles.html:202
 #: warehouse/templates/manage/roles.html:52
-#: warehouse/templates/manage/roles.html:86
-#: warehouse/templates/manage/roles.html:180
+#: warehouse/templates/manage/roles.html:83
+#: warehouse/templates/manage/roles.html:154
+#: warehouse/templates/manage/roles.html:269
+#: warehouse/templates/manage/roles.html:296
+#: warehouse/templates/manage/roles.html:334
 msgid "Role"
 msgstr ""
 
@@ -2096,6 +2104,11 @@ msgid "This link will expire in %(n_hours)s hours."
 msgstr ""
 
 #: warehouse/templates/includes/current-user-indicator.html:30
+#: warehouse/templates/manage/roles.html:43
+#: warehouse/templates/manage/roles.html:74
+#: warehouse/templates/manage/roles.html:85
+#: warehouse/templates/manage/roles.html:145
+#: warehouse/templates/manage/roles.html:156
 msgid "Admin"
 msgstr ""
 
@@ -3203,8 +3216,7 @@ msgstr ""
 #: warehouse/templates/manage/journal.html:52
 #: warehouse/templates/manage/organization/roles.html:59
 #: warehouse/templates/manage/organization/roles.html:190
-#: warehouse/templates/manage/roles.html:51
-#: warehouse/templates/manage/roles.html:168
+#: warehouse/templates/manage/roles.html:322
 #: warehouse/templates/manage/team/roles.html:43
 #: warehouse/templates/manage/team/roles.html:94
 msgid "User"
@@ -3501,9 +3513,6 @@ msgstr ""
 #: warehouse/templates/manage/organization/roles.html:90
 #: warehouse/templates/manage/organizations.html:63
 #: warehouse/templates/manage/publishing.html:83
-#: warehouse/templates/manage/roles.html:43
-#: warehouse/templates/manage/roles.html:77
-#: warehouse/templates/manage/roles.html:88
 msgid "Owner"
 msgstr ""
 
@@ -3752,6 +3761,7 @@ msgid "workflow.yml"
 msgstr ""
 
 #: warehouse/templates/manage/publishing.html:118
+#: warehouse/templates/manage/roles.html:306
 #: warehouse/templates/manage/team/roles.html:110
 msgid "Add"
 msgstr ""
@@ -4131,7 +4141,6 @@ msgstr ""
 #: warehouse/templates/manage/organization/roles.html:61
 #: warehouse/templates/manage/roles.html:23
 #: warehouse/templates/manage/roles.html:28
-#: warehouse/templates/manage/roles.html:53
 #: warehouse/templates/manage/team/roles.html:23
 #: warehouse/templates/manage/team/roles.html:28
 msgid "2FA"
@@ -4156,9 +4165,11 @@ msgid "There are two possible roles for collaborators:"
 msgstr ""
 
 #: warehouse/templates/manage/roles.html:41
-#: warehouse/templates/manage/roles.html:79
-#: warehouse/templates/manage/roles.html:88
-msgid "Maintainer"
+#: warehouse/templates/manage/roles.html:76
+#: warehouse/templates/manage/roles.html:85
+#: warehouse/templates/manage/roles.html:147
+#: warehouse/templates/manage/roles.html:156
+msgid "Upload"
 msgstr ""
 
 #: warehouse/templates/manage/roles.html:42
@@ -4175,57 +4186,107 @@ msgstr ""
 
 #: warehouse/templates/manage/roles.html:48
 #, python-format
-msgid "Users who can manage %(project_name)s"
+msgid "Collaborators who can manage %(project_name)s"
+msgstr ""
+
+#: warehouse/templates/manage/roles.html:51
+msgid "Collaborator"
 msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:109
-#: warehouse/templates/manage/roles.html:94
+#: warehouse/templates/manage/roles.html:91
+#: warehouse/templates/manage/roles.html:162
 msgid "Save role"
 msgstr ""
 
 #: warehouse/templates/manage/account/recovery_codes-provision.html:63
 #: warehouse/templates/manage/organization/roles.html:110
-#: warehouse/templates/manage/roles.html:95
+#: warehouse/templates/manage/roles.html:92
+#: warehouse/templates/manage/roles.html:163
 msgid "Save"
 msgstr ""
 
-#: warehouse/templates/manage/organization/roles.html:127
-#: warehouse/templates/manage/roles.html:109
-msgid "Cannot remove yourself as owner"
+#: warehouse/templates/manage/roles.html:99
+#, python-format
+msgid ""
+"\n"
+"            %(count)s member\n"
+"            "
+msgid_plural ""
+"\n"
+"            %(count)s members\n"
+"            "
+msgstr[0] ""
+msgstr[1] ""
+
+#: warehouse/templates/manage/roles.html:114
+#: warehouse/templates/manage/roles.html:177
+msgid "Cannot remove yourself as Admin"
 msgstr ""
 
-#: warehouse/templates/manage/roles.html:112
+#: warehouse/templates/manage/roles.html:117
+#: warehouse/templates/manage/roles.html:180
 #, python-format
-msgid "Remove %(user)s from this project"
+msgid "Remove %(collaborator)s from this project"
 msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:159
-#: warehouse/templates/manage/roles.html:139
+#: warehouse/templates/manage/roles.html:207
 msgid "Invite pending"
 msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:161
-#: warehouse/templates/manage/roles.html:141
+#: warehouse/templates/manage/roles.html:209
 msgid "Invite expired"
 msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:172
-#: warehouse/templates/manage/roles.html:152
+#: warehouse/templates/manage/roles.html:220
 #, python-format
 msgid "Revoke invitation for %(user)s"
 msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:174
-#: warehouse/templates/manage/roles.html:154
+#: warehouse/templates/manage/roles.html:222
 msgid "Revoke invite"
 msgstr ""
 
-#: warehouse/templates/manage/roles.html:163
+#: warehouse/templates/manage/roles.html:233
+msgid "Add internal collaborator"
+msgstr ""
+
+#: warehouse/templates/manage/roles.html:240
+msgid "️Team or member?"
+msgstr ""
+
+#: warehouse/templates/manage/roles.html:250
+msgid "Add a team or an individual member as a collaborator."
+msgstr ""
+
+#: warehouse/templates/manage/roles.html:258
+msgid "️Name of team"
+msgstr ""
+
+#: warehouse/templates/manage/roles.html:262
+msgid "There are no teams in the organization."
+msgstr ""
+
+#: warehouse/templates/manage/organization/roles.html:41
+#: warehouse/templates/manage/organization/roles.html:86
+#: warehouse/templates/manage/roles.html:281
+msgid "Member"
+msgstr ""
+
+#: warehouse/templates/manage/roles.html:313
+msgid "Invite external collaborator"
+msgstr ""
+
+#: warehouse/templates/manage/roles.html:315
 msgid "Invite collaborator"
 msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:213
-#: warehouse/templates/manage/roles.html:191
+#: warehouse/templates/manage/roles.html:345
 msgid "Invite"
 msgstr ""
 
@@ -4895,11 +4956,6 @@ msgid ""
 "organization:"
 msgstr ""
 
-#: warehouse/templates/manage/organization/roles.html:41
-#: warehouse/templates/manage/organization/roles.html:86
-msgid "Member"
-msgstr ""
-
 #: warehouse/templates/manage/organization/roles.html:42
 msgid ""
 "Can be owner or maintainer for specific projects. Cannot create new "
@@ -4933,6 +4989,10 @@ msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:124
 msgid "Cannot remove other people from the organization"
+msgstr ""
+
+#: warehouse/templates/manage/organization/roles.html:127
+msgid "Cannot remove yourself as owner"
 msgstr ""
 
 #: warehouse/templates/manage/organization/roles.html:130
