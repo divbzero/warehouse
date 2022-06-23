@@ -6879,7 +6879,8 @@ class TestManageProjectRoles:
         result = views.manage_project_roles(project, db_request, _form_class=form_class)
 
         assert db_request.find_service.calls == [
-            pretend.call(IUserService, context=None)
+            pretend.call(IOrganizationService, context=None),
+            pretend.call(IUserService, context=None),
         ]
         assert form_class.calls == [
             pretend.call(db_request.POST, user_service=user_service)
@@ -6889,6 +6890,9 @@ class TestManageProjectRoles:
             "roles": {role},
             "invitations": {role_invitation},
             "form": form_obj,
+            "enable_internal_collaborator": False,
+            "team_project_roles": set(),
+            "internal_role_form": None,
         }
 
     def test_post_new_role_validation_fails(self, db_request):
@@ -6909,7 +6913,8 @@ class TestManageProjectRoles:
         result = views.manage_project_roles(project, db_request, _form_class=form_class)
 
         assert db_request.find_service.calls == [
-            pretend.call(IUserService, context=None)
+            pretend.call(IOrganizationService, context=None),
+            pretend.call(IUserService, context=None),
         ]
         assert form_class.calls == [
             pretend.call(db_request.POST, user_service=user_service)
@@ -6920,6 +6925,9 @@ class TestManageProjectRoles:
             "roles": {role},
             "invitations": {role_invitation},
             "form": form_obj,
+            "enable_internal_collaborator": False,
+            "team_project_roles": set(),
+            "internal_role_form": None,
         }
 
     def test_post_new_role(self, monkeypatch, db_request):
@@ -6928,13 +6936,10 @@ class TestManageProjectRoles:
         EmailFactory.create(user=new_user, verified=True, primary=True)
         owner_1 = UserFactory.create(username="owner_1")
         owner_2 = UserFactory.create(username="owner_2")
-        owner_1_role = RoleFactory.create(
-            user=owner_1, project=project, role_name="Owner"
-        )
-        owner_2_role = RoleFactory.create(
-            user=owner_2, project=project, role_name="Owner"
-        )
+        RoleFactory.create(user=owner_1, project=project, role_name="Owner")
+        RoleFactory.create(user=owner_2, project=project, role_name="Owner")
 
+        organization_service = pretend.stub()
         user_service = pretend.stub(
             find_userid=lambda username: new_user.id, get_user=lambda userid: new_user
         )
@@ -6943,6 +6948,7 @@ class TestManageProjectRoles:
         )
         db_request.find_service = pretend.call_recorder(
             lambda iface, context=None, name=None: {
+                IOrganizationService: organization_service,
                 ITokenService: token_service,
                 IUserService: user_service,
             }.get(iface)
@@ -6972,32 +6978,27 @@ class TestManageProjectRoles:
         result = views.manage_project_roles(project, db_request, _form_class=form_class)
 
         assert db_request.find_service.calls == [
+            pretend.call(IOrganizationService, context=None),
             pretend.call(IUserService, context=None),
             pretend.call(ITokenService, name="email"),
         ]
         assert form_obj.validate.calls == [pretend.call()]
         assert form_class.calls == [
             pretend.call(db_request.POST, user_service=user_service),
-            pretend.call(user_service=user_service),
         ]
         assert db_request.session.flash.calls == [
             pretend.call(f"Invitation sent to '{new_user.username}'", queue="success")
         ]
 
         # Only one role invitation is created
-        role_invitation = (
+        assert (
             db_request.db.query(RoleInvitation)
             .filter(RoleInvitation.user == new_user)
             .filter(RoleInvitation.project == project)
             .one()
         )
 
-        assert result == {
-            "project": project,
-            "roles": {owner_1_role, owner_2_role},
-            "invitations": {role_invitation},
-            "form": form_obj,
-        }
+        assert isinstance(result, HTTPSeeOther)
 
         assert send_project_role_verification_email.calls == [
             pretend.call(
@@ -7023,6 +7024,7 @@ class TestManageProjectRoles:
         user = UserFactory.create(username="testuser")
         role = RoleFactory.create(user=user, project=project, role_name="Owner")
 
+        organization_service = pretend.stub()
         user_service = pretend.stub(
             find_userid=lambda username: user.id, get_user=lambda userid: user
         )
@@ -7031,6 +7033,7 @@ class TestManageProjectRoles:
         )
         db_request.find_service = pretend.call_recorder(
             lambda iface, context=None, name=None: {
+                IOrganizationService: organization_service,
                 ITokenService: token_service,
                 IUserService: user_service,
             }.get(iface)
@@ -7050,13 +7053,12 @@ class TestManageProjectRoles:
         result = views.manage_project_roles(project, db_request, _form_class=form_class)
 
         assert db_request.find_service.calls == [
+            pretend.call(IOrganizationService, context=None),
             pretend.call(IUserService, context=None),
-            pretend.call(ITokenService, name="email"),
         ]
         assert form_obj.validate.calls == [pretend.call()]
         assert form_class.calls == [
             pretend.call(db_request.POST, user_service=user_service),
-            pretend.call(user_service=user_service),
         ]
         assert db_request.session.flash.calls == [
             pretend.call(
@@ -7072,6 +7074,9 @@ class TestManageProjectRoles:
             "roles": {role},
             "invitations": set(),
             "form": form_obj,
+            "enable_internal_collaborator": False,
+            "team_project_roles": set(),
+            "internal_role_form": None,
         }
 
     def test_reinvite_role_after_expiration(self, monkeypatch, db_request):
@@ -7080,16 +7085,13 @@ class TestManageProjectRoles:
         EmailFactory.create(user=new_user, verified=True, primary=True)
         owner_1 = UserFactory.create(username="owner_1")
         owner_2 = UserFactory.create(username="owner_2")
-        owner_1_role = RoleFactory.create(
-            user=owner_1, project=project, role_name="Owner"
-        )
-        owner_2_role = RoleFactory.create(
-            user=owner_2, project=project, role_name="Owner"
-        )
-        new_user_role_invitation = RoleInvitationFactory.create(
+        RoleFactory.create(user=owner_1, project=project, role_name="Owner")
+        RoleFactory.create(user=owner_2, project=project, role_name="Owner")
+        RoleInvitationFactory.create(
             user=new_user, project=project, invite_status="expired"
         )
 
+        organization_service = pretend.stub()
         user_service = pretend.stub(
             find_userid=lambda username: new_user.id, get_user=lambda userid: new_user
         )
@@ -7098,6 +7100,7 @@ class TestManageProjectRoles:
         )
         db_request.find_service = pretend.call_recorder(
             lambda iface, context=None, name=None: {
+                IOrganizationService: organization_service,
                 ITokenService: token_service,
                 IUserService: user_service,
             }.get(iface)
@@ -7128,34 +7131,27 @@ class TestManageProjectRoles:
         result = views.manage_project_roles(project, db_request, _form_class=form_class)
 
         assert db_request.find_service.calls == [
+            pretend.call(IOrganizationService, context=None),
             pretend.call(IUserService, context=None),
             pretend.call(ITokenService, name="email"),
         ]
         assert form_obj.validate.calls == [pretend.call()]
         assert form_class.calls == [
             pretend.call(db_request.POST, user_service=user_service),
-            pretend.call(user_service=user_service),
         ]
         assert db_request.session.flash.calls == [
             pretend.call(f"Invitation sent to '{new_user.username}'", queue="success")
         ]
 
         # Only one role invitation is created
-        role_invitation = (
+        assert (
             db_request.db.query(RoleInvitation)
             .filter(RoleInvitation.user == new_user)
             .filter(RoleInvitation.project == project)
             .one()
         )
 
-        assert result["invitations"] == {new_user_role_invitation}
-
-        assert result == {
-            "project": project,
-            "roles": {owner_1_role, owner_2_role},
-            "invitations": {role_invitation},
-            "form": form_obj,
-        }
+        assert isinstance(result, HTTPSeeOther)
 
         assert send_project_role_verification_email.calls == [
             pretend.call(
@@ -7183,6 +7179,7 @@ class TestManageProjectRoles:
         if with_email:
             EmailFactory.create(user=user, verified=False, primary=True)
 
+        organization_service = pretend.stub()
         user_service = pretend.stub(
             find_userid=lambda username: user.id, get_user=lambda userid: user
         )
@@ -7193,6 +7190,7 @@ class TestManageProjectRoles:
         )
         db_request.find_service = pretend.call_recorder(
             lambda iface, context=None, name=None: {
+                IOrganizationService: organization_service,
                 ITokenService: token_service,
                 IUserService: user_service,
             }.get(iface)
@@ -7212,13 +7210,13 @@ class TestManageProjectRoles:
         result = views.manage_project_roles(project, db_request, _form_class=form_class)
 
         assert db_request.find_service.calls == [
+            pretend.call(IOrganizationService, context=None),
             pretend.call(IUserService, context=None),
             pretend.call(ITokenService, name="email"),
         ]
         assert form_obj.validate.calls == [pretend.call()]
         assert form_class.calls == [
             pretend.call(db_request.POST, user_service=user_service),
-            pretend.call(user_service=user_service),
         ]
         assert db_request.session.flash.calls == [
             pretend.call(
@@ -7236,6 +7234,9 @@ class TestManageProjectRoles:
             "roles": set(),
             "invitations": set(),
             "form": form_obj,
+            "enable_internal_collaborator": False,
+            "team_project_roles": set(),
+            "internal_role_form": None,
         }
 
     def test_cannot_reinvite_role(self, db_request):
@@ -7254,6 +7255,7 @@ class TestManageProjectRoles:
             user=new_user, project=project, invite_status="pending"
         )
 
+        organization_service = pretend.stub()
         user_service = pretend.stub(
             find_userid=lambda username: new_user.id, get_user=lambda userid: new_user
         )
@@ -7264,6 +7266,7 @@ class TestManageProjectRoles:
         )
         db_request.find_service = pretend.call_recorder(
             lambda iface, context=None, name=None: {
+                IOrganizationService: organization_service,
                 ITokenService: token_service,
                 IUserService: user_service,
             }.get(iface)
@@ -7285,13 +7288,13 @@ class TestManageProjectRoles:
         result = views.manage_project_roles(project, db_request, _form_class=form_class)
 
         assert db_request.find_service.calls == [
+            pretend.call(IOrganizationService, context=None),
             pretend.call(IUserService, context=None),
             pretend.call(ITokenService, name="email"),
         ]
         assert form_obj.validate.calls == [pretend.call()]
         assert form_class.calls == [
             pretend.call(db_request.POST, user_service=user_service),
-            pretend.call(user_service=user_service),
         ]
         assert db_request.session.flash.calls == [
             pretend.call(
@@ -7305,6 +7308,9 @@ class TestManageProjectRoles:
             "roles": {owner_1_role, owner_2_role},
             "invitations": {new_user_invitation},
             "form": form_obj,
+            "enable_internal_collaborator": False,
+            "team_project_roles": set(),
+            "internal_role_form": None,
         }
 
 
@@ -7580,7 +7586,7 @@ class TestChangeProjectRole:
         result = views.change_project_role(project, db_request)
 
         assert db_request.session.flash.calls == [
-            pretend.call("Cannot remove yourself as Owner", queue="error")
+            pretend.call("Cannot remove yourself as Admin", queue="error")
         ]
         assert isinstance(result, HTTPSeeOther)
         assert result.headers["Location"] == "/the-redirect"
@@ -7679,7 +7685,7 @@ class TestDeleteProjectRoles:
         result = views.delete_project_role(project, db_request)
 
         assert db_request.session.flash.calls == [
-            pretend.call("Cannot remove yourself as Owner", queue="error")
+            pretend.call("Cannot remove yourself as Admin", queue="error")
         ]
         assert isinstance(result, HTTPSeeOther)
         assert result.headers["Location"] == "/the-redirect"
