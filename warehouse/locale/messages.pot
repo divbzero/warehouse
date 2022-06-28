@@ -349,11 +349,11 @@ msgid ""
 "cannot be added as a ${role_name} for organization"
 msgstr ""
 
-#: warehouse/manage/views.py:1800 warehouse/manage/views.py:3883
+#: warehouse/manage/views.py:1800 warehouse/manage/views.py:3890
 msgid "User '${username}' already has an active invite. Please try again later."
 msgstr ""
 
-#: warehouse/manage/views.py:1857 warehouse/manage/views.py:3951
+#: warehouse/manage/views.py:1857 warehouse/manage/views.py:3958
 msgid "Invitation sent to '${username}'"
 msgstr ""
 
@@ -361,47 +361,47 @@ msgstr ""
 msgid "Could not find organization invitation."
 msgstr ""
 
-#: warehouse/manage/views.py:1914 warehouse/manage/views.py:3995
+#: warehouse/manage/views.py:1914 warehouse/manage/views.py:4002
 msgid "Invitation already expired."
 msgstr ""
 
-#: warehouse/manage/views.py:1947 warehouse/manage/views.py:4019
+#: warehouse/manage/views.py:1947 warehouse/manage/views.py:4026
 msgid "Invitation revoked from '${username}'."
 msgstr ""
 
-#: warehouse/manage/views.py:2334
+#: warehouse/manage/views.py:2341
 msgid "User '${username}' is already a team member"
 msgstr ""
 
-#: warehouse/manage/views.py:2721
+#: warehouse/manage/views.py:2728
 msgid ""
 "There have been too many attempted OpenID Connect registrations. Try "
 "again later."
 msgstr ""
 
-#: warehouse/manage/views.py:3673
+#: warehouse/manage/views.py:3680
 msgid "Team '${team_name}' already has ${role_name} role for project"
 msgstr ""
 
-#: warehouse/manage/views.py:3741
+#: warehouse/manage/views.py:3748
 msgid "${team_name} is now ${role} of the '${project_name}' project."
 msgstr ""
 
-#: warehouse/manage/views.py:3769
+#: warehouse/manage/views.py:3776
 msgid "User '${username}' already has ${role_name} role for project"
 msgstr ""
 
-#: warehouse/manage/views.py:3836
+#: warehouse/manage/views.py:3843
 msgid "${username} is now ${role} of the '${project_name}' project."
 msgstr ""
 
-#: warehouse/manage/views.py:3869
+#: warehouse/manage/views.py:3876
 msgid ""
 "User '${username}' does not have a verified primary email address and "
 "cannot be added as a ${role_name} for project"
 msgstr ""
 
-#: warehouse/manage/views.py:3984
+#: warehouse/manage/views.py:3991
 msgid "Could not find role invitation."
 msgstr ""
 
