@@ -255,6 +255,7 @@ class Organization(HasEvents, db.Model):
                             "view:team",
                             "manage:organization",
                             "manage:team",
+                            "manage:billing",
                         ],
                     )
                 )
