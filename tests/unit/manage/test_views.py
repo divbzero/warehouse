@@ -72,6 +72,7 @@ from ...common.db.accounts import EmailFactory
 from ...common.db.organizations import (
     OrganizationFactory,
     OrganizationInvitationFactory,
+    OrganizationProjectFactory,
     OrganizationRoleFactory,
     TeamFactory,
     TeamProjectRoleFactory,
@@ -2638,7 +2639,9 @@ class TestManageOrganizationSettings:
         self, db_request, organization_service, enable_organizations, monkeypatch
     ):
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         save_organization_obj = pretend.stub()
         save_organization_cls = pretend.call_recorder(
@@ -2949,7 +2952,10 @@ class TestManageOrganizationSettings:
         monkeypatch,
     ):
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
+
         db_request.POST = {"confirm_organization_name": organization.name}
         db_request.route_path = pretend.call_recorder(
             lambda *a, **kw: "/manage/organizations/"
@@ -3111,7 +3117,9 @@ class TestManageOrganizationProjects:
         monkeypatch,
     ):
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         add_organization_project_obj = pretend.stub()
         add_organization_project_cls = pretend.call_recorder(
@@ -3152,7 +3160,9 @@ class TestManageOrganizationProjects:
         monkeypatch,
     ):
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         project = ProjectFactory.create()
 
@@ -3174,7 +3184,9 @@ class TestManageOrganizationProjects:
         )
 
         def add_organization_project(*args, **kwargs):
-            organization.projects.append(project)
+            OrganizationProjectFactory.create(
+                organization=organization, project=project
+            )
 
         monkeypatch.setattr(
             organization_service, "add_organization_project", add_organization_project
@@ -3214,7 +3226,9 @@ class TestManageOrganizationProjects:
         monkeypatch,
     ):
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         project = ProjectFactory.create()
 
@@ -3235,7 +3249,9 @@ class TestManageOrganizationProjects:
         )
 
         def add_organization_project(*args, **kwargs):
-            organization.projects.append(project)
+            OrganizationProjectFactory.create(
+                organization=organization, project=project
+            )
 
         monkeypatch.setattr(
             organization_service, "add_organization_project", add_organization_project
@@ -3275,7 +3291,9 @@ class TestManageOrganizationProjects:
         monkeypatch,
     ):
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         project = ProjectFactory.create()
 
@@ -3297,7 +3315,9 @@ class TestManageOrganizationProjects:
         )
 
         def add_organization_project(*args, **kwargs):
-            organization.projects.append(project)
+            OrganizationProjectFactory.create(
+                organization=organization, project=project
+            )
 
         monkeypatch.setattr(
             organization_service, "add_organization_project", add_organization_project
@@ -3328,7 +3348,9 @@ class TestManageOrganizationProjects:
         db_request.help_url = lambda *a, **kw: ""
 
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         project = ProjectFactory.create()
 
@@ -3356,7 +3378,9 @@ class TestManageOrganizationProjects:
         monkeypatch.setattr(views, "add_project", add_project)
 
         def add_organization_project(*args, **kwargs):
-            organization.projects.append(project)
+            OrganizationProjectFactory.create(
+                organization=organization, project=project
+            )
 
         monkeypatch.setattr(
             organization_service, "add_organization_project", add_organization_project
@@ -3378,7 +3402,6 @@ class TestManageOrganizationProjects:
         assert result.headers["Location"] == db_request.path
         assert validate_project_name.calls == [pretend.call(project.name, db_request)]
         assert add_project.calls == [pretend.call(project.name, db_request)]
-        assert len(add_organization_project_cls.calls) == 1
         assert len(organization.projects) == 2
         assert send_organization_project_added_email.calls == [
             pretend.call(
@@ -3398,7 +3421,9 @@ class TestManageOrganizationProjects:
         monkeypatch,
     ):
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         project = ProjectFactory.create()
 
@@ -3449,7 +3474,9 @@ class TestManageOrganizationProjects:
         db_request.help_url = lambda *a, **kw: "help-url"
 
         organization = OrganizationFactory.create()
-        organization.projects = [ProjectFactory.create()]
+        OrganizationProjectFactory.create(
+            organization=organization, project=ProjectFactory.create()
+        )
 
         project = ProjectFactory.create()
 
@@ -5431,7 +5458,9 @@ class TestManageProjectSettings:
         self, monkeypatch, db_request
     ):
         project = ProjectFactory.create(name="foo")
-        project.organization = OrganizationFactory.create(name="bar")
+        OrganizationProjectFactory.create(
+            organization=OrganizationFactory.create(name="bar"), project=project
+        )
 
         db_request.POST = MultiDict(
             {
@@ -5465,7 +5494,9 @@ class TestManageProjectSettings:
 
     def test_remove_organization_project(self, monkeypatch, db_request):
         project = ProjectFactory.create(name="foo")
-        project.organization = OrganizationFactory.create(name="bar")
+        OrganizationProjectFactory.create(
+            organization=OrganizationFactory.create(name="bar"), project=project
+        )
 
         db_request.POST = MultiDict(
             {
@@ -5648,7 +5679,9 @@ class TestManageProjectSettings:
     ):
         organization = OrganizationFactory.create(name="baz")
         project = ProjectFactory.create(name="foo")
-        project.organization = OrganizationFactory.create(name="bar")
+        OrganizationProjectFactory.create(
+            organization=OrganizationFactory.create(name="bar"), project=project
+        )
 
         db_request.POST = MultiDict(
             {
@@ -5717,7 +5750,9 @@ class TestManageProjectSettings:
 
     def test_transfer_organization_project_invalid(self, monkeypatch, db_request):
         project = ProjectFactory.create(name="foo")
-        project.organization = OrganizationFactory.create(name="bar")
+        OrganizationProjectFactory.create(
+            organization=OrganizationFactory.create(name="bar"), project=project
+        )
 
         db_request.POST = MultiDict(
             {
@@ -5751,7 +5786,9 @@ class TestManageProjectSettings:
     def test_transfer_organization_project(self, monkeypatch, db_request):
         organization = OrganizationFactory.create(name="baz")
         project = ProjectFactory.create(name="foo")
-        project.organization = OrganizationFactory.create(name="bar")
+        OrganizationProjectFactory.create(
+            organization=OrganizationFactory.create(name="bar"), project=project
+        )
 
         db_request.POST = MultiDict(
             {
