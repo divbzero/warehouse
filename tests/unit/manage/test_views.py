@@ -6912,7 +6912,9 @@ class TestManageProjectRoles:
 
     @pytest.fixture
     def organization_project(self, organization):
-        return ProjectFactory.create(organization=organization)
+        project = ProjectFactory.create(organization=organization)
+        OrganizationProjectFactory(organization=organization, project=project)
+        return project
 
     @pytest.fixture
     def organization_member(self, organization):
@@ -7959,7 +7961,9 @@ class TestChangeTeamProjectRole:
 
     @pytest.fixture
     def organization_project(self, organization):
-        return ProjectFactory.create(organization=organization)
+        project = ProjectFactory.create(organization=organization)
+        OrganizationProjectFactory(organization=organization, project=project)
+        return project
 
     @pytest.fixture
     def organization_member(self, organization):
@@ -8145,7 +8149,9 @@ class TestDeleteTeamProjectRole:
 
     @pytest.fixture
     def organization_project(self, organization):
-        return ProjectFactory.create(organization=organization)
+        project = ProjectFactory.create(organization=organization)
+        OrganizationProjectFactory(organization=organization, project=project)
+        return project
 
     @pytest.fixture
     def organization_member(self, organization):
