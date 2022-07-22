@@ -33,9 +33,9 @@ black==22.6.0 \
     --hash=sha256:f586c26118bc6e714ec58c09df0157fe2d9ee195c764f630eb0d8e7ccce72e69 \
     --hash=sha256:f6fe02afde060bbeef044af7996f335fbe90b039ccf3f5eb8f16df8b20f77666
     # via -r requirements/lint.in
-boto3-stubs==1.24.22 \
-    --hash=sha256:0602494ca5ae96fd6a275f1fb47c79b565bd1b7d6bcb3427db9db10b5a05dea4 \
-    --hash=sha256:f6166156e6e6b03f27056efcab1c38fbf98d886743470ce1b900c4d56977817f
+boto3-stubs==1.24.35 \
+    --hash=sha256:b99fa11e43e676072088488e43c2d61bb2cfc9b6a6af9e9b00c3377a0ef91a63 \
+    --hash=sha256:f327bec79a1437f15f1bacc5aad58e274a227b0d27f3a46cae034ed4be31ab32
     # via types-boto3
 botocore-stubs==1.27.22 \
     --hash=sha256:56c687edac63deb757623c152265aa37e8e79492f482bc334f5ce084b70c80b7 \
@@ -221,6 +221,10 @@ types-requests==2.28.0 \
     --hash=sha256:85383b4ef0535f639c3f06c5bbb6494bbf59570c4cd88bbcf540f0b2ac1b49ab \
     --hash=sha256:9863d16dfbb3fa55dcda64fa3b989e76e8859033b26c1e1623e30465cfe294d3
     # via -r requirements/lint.in
+types-s3transfer==0.6.0.post2 \
+    --hash=sha256:9d9a2b2a068c0cd18dd20db81a118e7664d801427fdc36cb345a85fe8d245d20 \
+    --hash=sha256:af5222a02eb1491828c01d3f7b0f77bc9600989ecfbff6df63a60b8ba88c4565
+    # via boto3-stubs
 types-setuptools==57.4.18 \
     --hash=sha256:8ee03d823fe7fda0bd35faeae33d35cb5c25b497263e6a58b34c4cfd05f40bcf \
     --hash=sha256:9660b8774b12cd61b448e2fd87a667c02e7ec13ce9f15171f1d49a4654c4df6a
@@ -242,6 +246,7 @@ typing-extensions==4.3.0 \
     --hash=sha256:e6d2677a32f47fc7eb2795db1dd15c1f34eff616bcaf2cfb5e997f854fa1c4a6
     # via
     #   boto3-stubs
+    #   botocore-stubs
     #   celery-types
     #   mypy
 zope-event==4.5.0 \
@@ -309,9 +314,14 @@ zope-schema==6.2.0 \
     # via mypy-zope
 
 # The following packages are considered to be unsafe in a requirements file:
+pip==22.2 \
+    --hash=sha256:8d63fcd4ee293e30b644827268a0a973d080e5c7425ef26d427f5eb2126c7681 \
+    --hash=sha256:9abf423d5d64f3289ab9d5bf31da9e6234f2e9c5d8dcf1423bcb46b809a02c2c
+    # via types-s3transfer
 setuptools==63.1.0 \
     --hash=sha256:16923d366ced322712c71ccb97164d07472abeecd13f3a6c283f6d5d26722793 \
     --hash=sha256:db3b8e2f922b2a910a29804776c643ea609badb6a32c4bcc226fd4fd902cce65
     # via
+    #   zope-event
     #   zope-interface
     #   zope-schema
