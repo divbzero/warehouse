@@ -150,9 +150,9 @@ pyupgrade==3.3.1 \
 restructuredtext-lint==1.4.0 \
     --hash=sha256:1b235c0c922341ab6c530390892eb9e92f90b9b75046063e047cacfb0f050c45
     # via doc8
-setuptools==65.6.3 \
-    --hash=sha256:57f6f22bde4e042978bcd50176fdb381d7c21a9efa4041202288d3737a0c6a54 \
-    --hash=sha256:a7620757bf984b58deaf32fc8a4577a9bbc0850cf92c20e1ce41c38c19e5fb75
+setuptools==66.1.0 \
+    --hash=sha256:78a02bdea8a5cb66dec1c507598c443bcc75562817d2556c1a17f7a344615bb4 \
+    --hash=sha256:fc19f9f62120a763300fd78e234b3cbd3417be098f08c156eaaf36420627e57b
     # via
     #   zope-event
     #   zope-interface
