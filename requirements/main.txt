@@ -378,8 +378,7 @@ dnspython==2.2.1 \
 docutils==0.19 \
     --hash=sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6 \
     --hash=sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc
-    # via
-    #   readme-renderer
+    # via readme-renderer
 elasticsearch==7.10.1 \
     --hash=sha256:4ebd34fd223b31c99d9f3b6b6236d3ac18b3046191a37231e8235b06ae7db955 \
     --hash=sha256:a725dd923d349ca0652cf95d6ce23d952e2153740cf4ab6daf4a2d804feeed48
@@ -884,9 +883,9 @@ markupsafe==2.1.1 \
     #   mako
     #   pyramid-jinja2
     #   wtforms
-mistune==2.0.4 \
-    --hash=sha256:182cc5ee6f8ed1b807de6b7bb50155df7b66495412836b9a74c8fbdfc75fe36d \
-    --hash=sha256:9ee0a66053e2267aba772c71e06891fa8f1af6d4b01d5e84e267b4570d4d9808
+mistune==2.0.5 \
+    --hash=sha256:0246113cb2492db875c6be56974a7c893333bf26cd92891c85f63151cee09d34 \
+    --hash=sha256:bad7f5d431886fcbaf5f758118ecff70d31f75231b34024a1341120340a65ce8
     # via -r requirements/main.in
 msgpack==1.0.4 \
     --hash=sha256:002b5c72b6cd9b4bafd790f364b8480e859b4712e91f43014fe01e4f957b8467 \
