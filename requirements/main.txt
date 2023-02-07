@@ -378,8 +378,7 @@ dnspython==2.2.1 \
 docutils==0.19 \
     --hash=sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6 \
     --hash=sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc
-    # via
-    #   readme-renderer
+    # via readme-renderer
 elasticsearch==7.10.1 \
     --hash=sha256:4ebd34fd223b31c99d9f3b6b6236d3ac18b3046191a37231e8235b06ae7db955 \
     --hash=sha256:a725dd923d349ca0652cf95d6ce23d952e2153740cf4ab6daf4a2d804feeed48
@@ -1344,9 +1343,9 @@ stdlib-list==0.8.0 \
     --hash=sha256:2ae0712a55b68f3fbbc9e58d6fa1b646a062188f49745b495f94d3310a9fdd3e \
     --hash=sha256:a1e503719720d71e2ed70ed809b385c60cd3fb555ba7ec046b96360d30b16d9f
     # via -r requirements/main.in
-stripe==5.0.0 \
-    --hash=sha256:50f69a5fc9cd6f7629861b80ea70a3c6da0c76401ddc159474f2d45fab9215d6 \
-    --hash=sha256:bdc8c5ee8e6b53c4767bbe720752cedb8af91db46ad96e511edd0fb74964ac5d
+stripe==5.1.1 \
+    --hash=sha256:277e156d3d5c82e1795b07c9e07b342c5ec42558ff17455e1e3d20697277dbdf \
+    --hash=sha256:c008dd08c59986dcf059fbb776486e70b82d4fa46a63ca1085d94b2688c28e19
     # via -r requirements/main.in
 structlog==22.3.0 \
     --hash=sha256:b403f344f902b220648fa9f286a23c0cc5439a5844d271fec40562dbadbc70ad \
