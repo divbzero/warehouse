@@ -93,9 +93,9 @@ iniconfig==1.1.1 \
     --hash=sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3 \
     --hash=sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32
     # via pytest
-mirakuru==2.4.2 \
-    --hash=sha256:ec84d4d81b4bca96cb0e598c6b3d198a92f036a0c1223c881482c02a98508226 \
-    --hash=sha256:fdb67d141cc9f7abd485a515d618daf3272c3e6ff48380749997ff8e8c5f2cb2
+mirakuru==2.5.0 \
+    --hash=sha256:20c440f07e11589735e2634bcf5ab9df0e9f901a1a18e323e15e0200112499fc \
+    --hash=sha256:4484f9405610886de3eb1bb1405b3ccd9b0d88b3ea4de68ee7873a873c11956b
     # via pytest-postgresql
 packaging==21.3 \
     --hash=sha256:dd47c42927d89ab911e606518907cc2d3a1f38bbd026385970643f9c5b8ecfeb \
