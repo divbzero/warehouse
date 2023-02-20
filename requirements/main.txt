@@ -378,8 +378,7 @@ dnspython==2.2.1 \
 docutils==0.19 \
     --hash=sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6 \
     --hash=sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc
-    # via
-    #   readme-renderer
+    # via readme-renderer
 elasticsearch==7.10.1 \
     --hash=sha256:4ebd34fd223b31c99d9f3b6b6236d3ac18b3046191a37231e8235b06ae7db955 \
     --hash=sha256:a725dd923d349ca0652cf95d6ce23d952e2153740cf4ab6daf4a2d804feeed48
@@ -1373,9 +1372,9 @@ translationstring==1.4 \
     --hash=sha256:5f4dc4d939573db851c8d840551e1a0fb27b946afe3b95aafc22577eed2d6262 \
     --hash=sha256:bf947538d76e69ba12ab17283b10355a9ecfbc078e6123443f43f2107f6376f3
     # via pyramid
-trove-classifiers==2022.12.22 \
-    --hash=sha256:f0013fd4ce06cfae879a2580ab6acc3d51ec93ecb364d6c061b6c77b44dd72de \
-    --hash=sha256:fe0fe3f085987161aee2a5a853c7cc7cdf64515c5965d57ad968fdd8cc3b0362
+trove-classifiers==2023.2.20 \
+    --hash=sha256:860b0c0d8c9e0d32629ca5ef137ea1e637580b634b74ba40e1539fd34464c0f5 \
+    --hash=sha256:de61417c958b06fd4923b2e26d4e70dd7ffc691d5435bcd7ed78d061278885f1
     # via -r requirements/main.in
 typeguard==2.13.3 \
     --hash=sha256:00edaa8da3a133674796cf5ea87d9f4b4c367d77476e185e80251cc13dfbb8c4 \
