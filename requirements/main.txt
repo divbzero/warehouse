@@ -378,8 +378,7 @@ dnspython==2.2.1 \
 docutils==0.19 \
     --hash=sha256:33995a6753c30b7f577febfc2c50411fec6aac7f7ffeb7c4cfe5991072dcf9e6 \
     --hash=sha256:5e1de4d849fee02c63b040a4a3fd567f4ab104defd8a5511fbbc24a8a017efbc
-    # via
-    #   readme-renderer
+    # via readme-renderer
 elasticsearch==7.10.1 \
     --hash=sha256:4ebd34fd223b31c99d9f3b6b6236d3ac18b3046191a37231e8235b06ae7db955 \
     --hash=sha256:a725dd923d349ca0652cf95d6ce23d952e2153740cf4ab6daf4a2d804feeed48
@@ -1215,9 +1214,9 @@ python-dateutil==2.8.2 \
     #   celery-redbeat
     #   elasticsearch-dsl
     #   google-cloud-bigquery
-python-slugify==7.0.0 \
-    --hash=sha256:003aee64f9fd955d111549f96c4b58a3f40b9319383c70fad6277a4974bbf570 \
-    --hash=sha256:7a0f21a39fa6c1c4bf2e5984c9b9ae944483fd10b54804cb0e23a3ccd4954f0b
+python-slugify==8.0.1 \
+    --hash=sha256:70ca6ea68fe63ecc8fa4fcf00ae651fc8a5d02d93dcd12ae6d4fc7ca46c4d395 \
+    --hash=sha256:ce0d46ddb668b3be82f4ed5e503dbc33dd815d83e2eb6824211310d3fb172a27
     # via -r requirements/main.in
 pytz==2022.7 \
     --hash=sha256:7ccfae7b4b2c067464a6733c6261673fdb8fd1be905460396b97a073e9fa683a \
