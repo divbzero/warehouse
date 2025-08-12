@@ -573,9 +573,9 @@ types-s3transfer==0.12.0 \
     --hash=sha256:101bbc5b7f00b71512374df881f480fc6bf63c948b5098ab024bf3370fbfb0e8 \
     --hash=sha256:f8f59201481e904362873bf0be3267f259d60ad946ebdfcb847d092a1fa26f98
     # via boto3-stubs
-types-setuptools==80.3.0.20250505 \
-    --hash=sha256:117c86a82367306388b55310d04da807ff4c3ecdf769656a5fdc0fdd06a2c1b6 \
-    --hash=sha256:5fd3d34b8fa3441d68d010fef95e232d1e48f3f5cb578f3477b7aae4f8374502
+types-setuptools==80.9.0.20250809 \
+    --hash=sha256:7c6539b4c7ac7b4ab4db2be66d8a58fb1e28affa3ee3834be48acafd94f5976a \
+    --hash=sha256:e986ba37ffde364073d76189e1d79d9928fb6f5278c7d07589cde353d0218864
     # via
     #   types-babel
     #   types-cffi
@@ -661,7 +661,6 @@ setuptools==80.3.1 \
     --hash=sha256:31e2c58dbb67c99c289f51c16d899afedae292b978f8051efaf6262d8212f927 \
     --hash=sha256:ea8e00d7992054c4c592aeb892f6ad51fe1b4d90cc6947cc45c45717c40ec537
     # via
-    #   types-setuptools
     #   zope-event
     #   zope-interface
     #   zope-schema
